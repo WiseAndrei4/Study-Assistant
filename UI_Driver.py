@@ -627,7 +627,8 @@ class RetrievalEngineApp(ctk.CTk):
             kpi_frame.grid_columnconfigure(col, weight=1)
 
         cards = [
-            ("RECOMMENDED efSearch", f"ef = {best['ef']}", f"Recall@10: {best['recall']*100:.1f}% | {best['p50_ms']:.2f} ms"),
+            ("RECOMMENDED efSearch", f"ef = {best['ef']}",
+             f"Recall@10: {best['recall'] * 100:.1f}% | {best['p50_ms']:.2f} ms"),
             ("THROUGHPUT AT OPTIMAL", f"{best['qps']:,.0f} QPS", f"p95 Latency: {best['p95_ms']:.2f} ms"),
             ("RANKING QUALITY", f"nDCG@10: {best['ndcg']:.3f}", f"MRR@10: {best['mrr']:.3f}"),
             ("INDEX FOOTPRINT", f"{self.hnsw.size:,} Vectors", f"768-dim FP32 ({vec_mb:.1f} MB)"),
@@ -701,7 +702,7 @@ class RetrievalEngineApp(ctk.CTk):
 
         ctk.CTkLabel(
             action_bar,
-            text=f"Takeaway: efSearch={best['ef']} hits {best['recall']*100:.1f}% recall at {best['p50_ms']:.2f} ms/query. Higher ef wastes CPU for minimal gain.",
+            text=f"Takeaway: efSearch={best['ef']} hits {best['recall'] * 100:.1f}% recall at {best['p50_ms']:.2f} ms/query. Higher ef wastes CPU for minimal gain.",
             font=ctk.CTkFont(size=12, weight="bold"),
         ).pack(side="left")
 
@@ -718,9 +719,10 @@ class RetrievalEngineApp(ctk.CTk):
         header = f"{'efSearch':<10} | {'Recall@10':<11} | {'nDCG@10':<9} | {'MRR@10':<9} | {'p50 (ms)':<10} | {'p95 (ms)':<10} | {'QPS':<10} | Status\n"
         table_box.insert("end", header + "-" * 92 + "\n")
         for r in sweep:
-            tag = "<-- OPTIMAL" if r["ef"] == best["ef"] else ("Fast / Lossy" if r["recall"] < 0.95 else "High Accuracy")
+            tag = "<-- OPTIMAL" if r["ef"] == best["ef"] else (
+                "Fast / Lossy" if r["recall"] < 0.95 else "High Accuracy")
             line = (
-                f"{r['ef']:<10} | {r['recall']*100:>8.2f}%  | {r['ndcg']:>8.4f} | {r['mrr']:>8.4f} | "
+                f"{r['ef']:<10} | {r['recall'] * 100:>8.2f}%  | {r['ndcg']:>8.4f} | {r['mrr']:>8.4f} | "
                 f"{r['p50_ms']:>8.2f}  | {r['p95_ms']:>8.2f}  | {r['qps']:>9,.0f} | {tag}\n"
             )
             table_box.insert("end", line)
@@ -743,7 +745,7 @@ class RetrievalEngineApp(ctk.CTk):
 
         recent = self.latency_history[-8:]
         q_labels = [
-            f"Q{i+1}: {item['query'][:24]}..." if len(item["query"]) > 24 else f"Q{i+1}: {item['query']}"
+            f"Q{i + 1}: {item['query'][:24]}..." if len(item["query"]) > 24 else f"Q{i + 1}: {item['query']}"
             for i, item in enumerate(recent)
         ]
         embed_ms = np.array([r["embed_ms"] for r in recent])
